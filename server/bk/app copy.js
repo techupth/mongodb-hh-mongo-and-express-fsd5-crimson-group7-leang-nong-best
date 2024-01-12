@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import productRouter from "./apps/products.js";
-import {client} from "./utils/db.js"
+import productRouter from "../apps/products.js";
+import {client} from "../utils/db.js"
 
 
 async function init(){
@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4001;
 app.listen(port, () => {
   console.log(`Server is running at port ${port}`);
 });
