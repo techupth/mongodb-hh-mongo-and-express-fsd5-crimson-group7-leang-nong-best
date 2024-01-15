@@ -8,12 +8,17 @@ function HomePage() {
   const [products, setProducts] = useState([]);
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
+  const [category, setCategory] = useState("");
+  const [keywords, setKeywords] = useState("");
+  const [page, setPage] = useState(1);
 
   const getProducts = async () => {
     try {
       setIsError(false);
       setIsLoading(true);
-      const results = await axios("http://localhost:4001/products");
+      const results = await axios(
+        `http://localhost:4001/products?page=${page}&category=${category}&keywords=${keywords}`
+      );
       setProducts(results.data.data);
       setIsLoading(false);
     } catch (error) {
@@ -30,7 +35,27 @@ function HomePage() {
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [page, category, keywords]);
+
+  const handleCategory = (event) => {
+    setCategory(event.target.value);
+  };
+
+  const handleKeywords = (event) => {
+    setKeywords(event.target.value);
+  };
+
+  const handleNextButtonClick = () => {
+    setPage(page + 1);
+  };
+
+  const handlePreviousButtonClick = () => {
+    if (page > 1) {
+      setPage((prevPage) => prevPage - 1);
+    } else {
+      setPage(1);
+    }
+  };
 
   return (
     <div>
@@ -48,13 +73,23 @@ function HomePage() {
         <div className="search-box">
           <label>
             Search product
-            <input type="text" placeholder="Search by name" />
+            <input
+              type="text"
+              placeholder="Search by name"
+              value={keywords}
+              onChange={handleKeywords}
+            />
           </label>
         </div>
         <div className="category-filter">
           <label>
             View Category
-            <select id="category" name="category" value="it">
+            <select
+              id="category"
+              name="category"
+              value={category}
+              onChange={handleCategory}
+            >
               <option disabled value="">
                 -- Select a category --
               </option>
@@ -85,8 +120,8 @@ function HomePage() {
               <div className="product-detail">
                 <h1>Product name: {product.name} </h1>
                 <h2>Product price: {product.price}</h2>
-                <h3>Category: IT</h3>
-                <h3>Created Time: 1 Jan 2011, 00:00:00</h3>
+                <h3>Category: {product.category}</h3>
+                <h3>Created Time: {product.created_at}</h3>
                 <p>Product description: {product.description} </p>
                 <div className="product-actions">
                   <button
@@ -124,8 +159,12 @@ function HomePage() {
       </div>
 
       <div className="pagination">
-        <button className="previous-button">Previous</button>
-        <button className="next-button">Next</button>
+        <button className="previous-button" onClick={handlePreviousButtonClick}>
+          Previous
+        </button>
+        <button className="next-button" onClick={handleNextButtonClick}>
+          Next
+        </button>
       </div>
       <div className="pages">1/ total page</div>
     </div>

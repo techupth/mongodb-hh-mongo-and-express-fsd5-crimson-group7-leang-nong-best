@@ -10,9 +10,7 @@ const connectionString = "mongodb://127.0.0.1:27017";
 // 1) Mongo Url ซึ่งเราจะใช้ `mongodb://127.0.0.1:27017`
 // 2) Options ซึ่งเราจะใส่ `{ useUnifiedTopology: true }`
 
-export const client = new MongoClient(connectionString, {
-  useUnifiedTopology: true, // เป็นการใช้ Connection management engine ตัวใหม่
-});
+export const client = new MongoClient(connectionString);
 
 // กำหนดให้ DB ที่จะใช้งานคือ "practice-mongo"
 export const db = client.db("practice-mongo");
