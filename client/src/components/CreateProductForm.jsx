@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -7,7 +7,7 @@ function CreateProductForm() {
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-
+  const [category, setCategory] = useState("");
   const navigate = useNavigate();
 
   const createProducts = async () => {
@@ -16,6 +16,7 @@ function CreateProductForm() {
       image: imageUrl,
       price,
       description,
+      category,
     });
     navigate("/");
   };
@@ -94,7 +95,14 @@ function CreateProductForm() {
       <div className="input-container">
         <label>
           Category
-          <select id="category" name="category" value="it">
+          <select
+            id="category"
+            name="category"
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+            value={category}
+          >
             <option disabled value="">
               -- Select a category --
             </option>

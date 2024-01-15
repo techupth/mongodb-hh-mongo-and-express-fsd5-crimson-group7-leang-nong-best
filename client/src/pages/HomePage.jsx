@@ -4,16 +4,20 @@ import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const navigate = useNavigate();
-
   const [products, setProducts] = useState([]);
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
+  const [category, setCategory] = useState("");
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const getProducts = async () => {
     try {
       setIsError(false);
       setIsLoading(true);
-      const results = await axios("http://localhost:4001/products");
+      const results = await axios.get(
+        `http://localhost:4001/products?page=${currentPage}&category=${category}&keywords=${search}`
+      );
       setProducts(results.data.data);
       setIsLoading(false);
     } catch (error) {
@@ -30,7 +34,28 @@ function HomePage() {
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [search, category, currentPage]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
+
+  const handleCategory = (e) => {
+    setCategory(e.target.value);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    } else {
+      setCurrentPage(1);
+    }
+  };
 
   return (
     <div>
@@ -48,13 +73,23 @@ function HomePage() {
         <div className="search-box">
           <label>
             Search product
-            <input type="text" placeholder="Search by name" />
+            <input
+              type="text"
+              placeholder="Search by name"
+              onChange={handleSearch}
+              id={search}
+            />
           </label>
         </div>
         <div className="category-filter">
           <label>
             View Category
-            <select id="category" name="category" value="it">
+            <select
+              id="category"
+              name="category"
+              value={category}
+              onChange={handleCategory}
+            >
               <option disabled value="">
                 -- Select a category --
               </option>
@@ -85,8 +120,8 @@ function HomePage() {
               <div className="product-detail">
                 <h1>Product name: {product.name} </h1>
                 <h2>Product price: {product.price}</h2>
-                <h3>Category: IT</h3>
-                <h3>Created Time: 1 Jan 2011, 00:00:00</h3>
+                <h3>Category: {product.category}</h3>
+                <h3>Created Time:{product.created_at}</h3>
                 <p>Product description: {product.description} </p>
                 <div className="product-actions">
                   <button
@@ -124,10 +159,14 @@ function HomePage() {
       </div>
 
       <div className="pagination">
-        <button className="previous-button">Previous</button>
-        <button className="next-button">Next</button>
+        <button className="previous-button" onClick={handlePreviousPage}>
+          Previous
+        </button>
+        <button className="next-button" onClick={handleNextPage}>
+          Next
+        </button>
       </div>
-      <div className="pages">1/ total page</div>
+      <div className="pages">{currentPage}/total pages</div>
     </div>
   );
 }
