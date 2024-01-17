@@ -5,8 +5,10 @@ import ViewProductPage from "./pages/ViewProductPage";
 import EditProductPage from "./pages/EditProductPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+
 function App() {
   return (
+    <>
     <div className="App">
       <BrowserRouter>
         <Routes>
@@ -23,6 +25,10 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+    <div>
+     
+    </div>
+    </>
   );
 }
 

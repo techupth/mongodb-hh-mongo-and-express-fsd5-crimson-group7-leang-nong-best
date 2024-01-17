@@ -9,8 +9,6 @@ function HomePage() {
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
 
-  
-
   const getProducts = async () => {
     try {
       setIsError(false);
@@ -25,13 +23,9 @@ function HomePage() {
   };
 
   const deleteProduct = async (productId) => {
-    try {
-      await axios.delete(`http://localhost:4001/products/${productId}`);
-      setProducts(prevProducts => prevProducts.filter((product) => product.id !== productId));
-    } catch (error) {
-      // Handle error if needed
-      console.error("Error deleting product:", error);
-    }
+    await axios.delete(`http://localhost:4001/products/${productId}`);
+    const newProducts = products.filter((product) => product.id !== productId);
+    setProducts(newProducts);
   };
 
   useEffect(() => {
@@ -110,12 +104,7 @@ function HomePage() {
             <h1>No Products</h1>
           </div>
         )}
-{
-  console.log(`products: ${products}`)||
-  console.log(`isError: ${isError}`)
-}
-{Array.isArray(products) && products.length > 0&& !isError && 
-        products.map((product) => {
+        {products.map((product) => {
           return (
             <div className="product" key={product._id}>
               <div className="product-preview">
@@ -164,13 +153,8 @@ function HomePage() {
             </div>
           );
         })}
-
-
-
-
-        {isError ? <h1>Error loading products. Please try again later.</h1> : null}
-{isLoading ? <div className="loading-indicator">Loading...</div> : null}
-
+        {isError ? <h1>Request failed</h1> : null}
+        {isLoading ? <h1>Loading ....</h1> : null}
       </div>
 
       <div className="pagination">
